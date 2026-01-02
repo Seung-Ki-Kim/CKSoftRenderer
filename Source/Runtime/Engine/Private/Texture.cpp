@@ -43,7 +43,7 @@ void Texture::Release()
 
 LinearColor Texture::GetSample(Vector2 InUV) const
 {
-	if (!IsIntialized())
+	if (!IsInitialized())
 	{
 		return LinearColor::Error;
 	}

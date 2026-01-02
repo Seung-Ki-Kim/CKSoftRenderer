@@ -1,15 +1,16 @@
 
 #include "Precompiled.h"
 #include <random>
+
 using namespace CK::DD;
 
-// ¸Þ½Ã
+// ï¿½Þ½ï¿½
 const std::size_t GameEngine::QuadMesh = std::hash<std::string>()("SM_Quad");
 
-// °ÔÀÓ ¿ÀºêÁ§Æ®
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 const std::string GameEngine::PlayerGo("Player");
 
-// ÅØ½ºÃÄ
+// ï¿½Ø½ï¿½ï¿½ï¿½
 const std::size_t GameEngine::DiffuseTexture = std::hash<std::string>()("Diffuse");
 const std::string GameEngine::SteveTexturePath("Steve.png");
 
@@ -23,20 +24,20 @@ struct GameObjectCompare
 
 void GameEngine::OnScreenResize(const ScreenPoint& InScreenSize)
 {
-	// È­¸é Å©±âÀÇ ¼³Á¤
+	// È­ï¿½ï¿½ Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	_ScreenSize = InScreenSize;
 	_MainCamera.SetViewportSize(_ScreenSize);
 }
 
 bool GameEngine::Init()
 {
-	// ÀÌ¹Ì ÃÊ±âÈ­µÇ¾î ÀÖÀ¸¸é ÃÊ±âÈ­ ÁøÇàÇÏÁö ¾ÊÀ½.
+	// ï¿½Ì¹ï¿½ ï¿½Ê±ï¿½È­ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	if (_IsInitialized)
 	{
 		return true;
 	}
 
-	// È­¸é Å©±â°¡ ¿Ã¹Ù·Î ¼³Á¤µÇ¾î ÀÖ´ÂÁö È®ÀÎ
+	// È­ï¿½ï¿½ Å©ï¿½â°¡ ï¿½Ã¹Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	if (_ScreenSize.HasZero())
 	{
 		return false;
@@ -63,7 +64,7 @@ bool GameEngine::Init()
 
 bool GameEngine::LoadResources()
 {
-	// ¸Þ½Ã µ¥ÀÌÅÍ ·Îµù
+	// ï¿½Þ½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
 	Mesh& quadMesh = CreateMesh(GameEngine::QuadMesh);
 
 	constexpr float squareHalfSize = 0.5f;
@@ -95,9 +96,9 @@ bool GameEngine::LoadResources()
 
 	quadMesh.CalculateBounds();
 
-	// ÅØ½ºÃÄ ·Îµù
+	// ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
 	Texture& diffuseTexture = CreateTexture(GameEngine::DiffuseTexture, GameEngine::SteveTexturePath);
-	if (!diffuseTexture.IsIntialized())
+	if (!diffuseTexture.IsInitialized())
 	{
 		return false;
 	}
@@ -107,7 +108,7 @@ bool GameEngine::LoadResources()
 
 bool GameEngine::LoadScene()
 {
-	// ÇÃ·¹ÀÌ¾î
+	// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
 	constexpr float playerScale = 20.f;
 	constexpr float squareScale = 10.f;
 
@@ -116,11 +117,11 @@ bool GameEngine::LoadScene()
 	goPlayer.GetTransform().SetScale(Vector2::One * playerScale);
 	goPlayer.SetColor(LinearColor::Red);
 
-	// °íÁ¤ ½Ãµå·Î ·£´ýÇÏ°Ô »ý¼º
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½
 	std::mt19937 generator(0);
 	std::uniform_real_distribution<float> dist(-1000.f, 1000.f);
 
-	// 100°³ÀÇ ¹è°æ °ÔÀÓ ¿ÀºêÁ§Æ® »ý¼º
+	// 100ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 	char name[64];
 	for (int i = 0; i < 100; ++i)
 	{
@@ -161,7 +162,7 @@ GameObject& GameEngine::CreateNewGameObject(const std::string& InName)
 		std::size_t targetHash = (*it)->GetHash();
 		if (targetHash == inHash)
 		{
-			// Áßº¹µÈ Å° ¹ß»ý. ¹«½Ã.
+			// ï¿½ßºï¿½ï¿½ï¿½ Å° ï¿½ß»ï¿½. ï¿½ï¿½ï¿½ï¿½.
 			assert(false);
 			return GameObject::Invalid;
 		}

@@ -1,9 +1,12 @@
 
 #include "Precompiled.h"
 #include <random>
+#include <memory>
+#include <vector>
+#include <unordered_map>
 using namespace CK::DDD;
 
-// º» ¸íÄª
+// ï¿½ï¿½ ï¿½ï¿½Äª
 const std::string GameEngine::RootBone("RootBone");
 const std::string GameEngine::PelvisBone("PelvisBone");
 const std::string GameEngine::SpineBone("SpineBone");
@@ -13,18 +16,18 @@ const std::string GameEngine::NeckBone("NeckBone");
 const std::string GameEngine::LeftLegBone("LeftLegBone");
 const std::string GameEngine::RightLegBone("RightLegBone");
 
-// ¸Þ½Ã
+// ï¿½Þ½ï¿½
 const std::size_t GameEngine::CharacterMesh = std::hash<std::string>()("SK_Steve");
 const std::size_t GameEngine::ArrowMesh = std::hash<std::string>()("SM_Arrow");
 const std::size_t GameEngine::PlaneMesh = std::hash<std::string>()("SM_Plane");
 
-// °ÔÀÓ ¿ÀºêÁ§Æ®
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 const std::string GameEngine::PlayerGo("Player");
 const std::string GameEngine::CameraRigGo("CameraRig");
 
-// ÅØ½ºÃÄ
+// ï¿½Ø½ï¿½ï¿½ï¿½
 const std::size_t GameEngine::DiffuseTexture = std::hash<std::string>()("Diffuse");
-const std::string GameEngine::SteveTexturePath("Steve.png");
+const std::string GameEngine::SteveTexturePath("Resource/Steve.png");
 
 struct GameObjectCompare
 {
@@ -36,20 +39,20 @@ struct GameObjectCompare
 
 void GameEngine::OnScreenResize(const ScreenPoint& InScreenSize)
 {
-	// È­¸é Å©±âÀÇ ¼³Á¤
+	// È­ï¿½ï¿½ Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	_ScreenSize = InScreenSize;
 	_MainCamera.SetViewportSize(_ScreenSize);
 }
 
 bool GameEngine::Init()
 {
-	// ÀÌ¹Ì ÃÊ±âÈ­µÇ¾î ÀÖÀ¸¸é ÃÊ±âÈ­ ÁøÇàÇÏÁö ¾ÊÀ½.
+	// ï¿½Ì¹ï¿½ ï¿½Ê±ï¿½È­ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	if (_IsInitialized)
 	{
 		return true;
 	}
 
-	// È­¸é Å©±â°¡ ¿Ã¹Ù·Î ¼³Á¤µÇ¾î ÀÖ´ÂÁö È®ÀÎ
+	// È­ï¿½ï¿½ Å©ï¿½â°¡ ï¿½Ã¹Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	if (_ScreenSize.HasZero())
 	{
 		return false;
@@ -76,7 +79,7 @@ bool GameEngine::Init()
 
 bool GameEngine::LoadResources()
 {
-	// Ä³¸¯ÅÍ ¸Þ½Ã »ý¼º
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	constexpr Vector3 headSize(0.5f, 0.5f, 0.5f);
 	constexpr Vector3 bodySize(0.5f, 0.75f, 0.25f);
 	constexpr Vector3 armLegSize(0.25f, 0.75f, 0.25f);
@@ -87,7 +90,7 @@ bool GameEngine::LoadResources()
 	auto& i = characterMesh.GetIndices();
 	auto& uv = characterMesh.GetUVs();
 
-	// 6°³ÀÇ ÆÄÆ®·Î ±¸¼ºµÇ¾î ÀÖÀ½.
+	// 6ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	static constexpr std::array<Vector3, totalCharacterParts> cubeMeshSize = {
 		headSize, bodySize, armLegSize, armLegSize, armLegSize, armLegSize
 	};
@@ -177,13 +180,13 @@ bool GameEngine::LoadResources()
 		Vector2(8.f, 48.f) / 64.f, Vector2(12.f, 48.f) / 64.f, Vector2(12.f, 44.f) / 64.f, Vector2(8.f, 44.f) / 64.f
 	};
 
-	// Ä³¸¯ÅÍ ½ºÄÌ·¹Å» ¸Þ½Ã ¼³Á¤
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½Å» ï¿½Þ½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	characterMesh.SetMeshType(MeshType::Skinned);
 	auto& cb = characterMesh.GetConnectedBones();
 	auto& w = characterMesh.GetWeights();
 	auto& bones = characterMesh.GetBones();
 
-	// º» »ý¼º
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	bones = {
 		{ GameEngine::RootBone, Bone(GameEngine::RootBone, Transform()) },
 		{ GameEngine::PelvisBone, Bone(GameEngine::PelvisBone, Transform(Vector3(0.f, 1.5f, 0.f))) },
@@ -195,7 +198,7 @@ bool GameEngine::LoadResources()
 		{ GameEngine::NeckBone, Bone(GameEngine::NeckBone, Transform(Vector3(0.f, 3.f, 0.f))) }
 	};
 
-	// º»ÀÇ °èÃþ ±¸Á¶ »ý¼º
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	Bone& root = characterMesh.GetBone(GameEngine::RootBone);
 	Bone& pelvis = characterMesh.GetBone(GameEngine::PelvisBone);
 	pelvis.SetParent(root);
@@ -212,7 +215,7 @@ bool GameEngine::LoadResources()
 	Bone& neck = characterMesh.GetBone(GameEngine::NeckBone);
 	neck.SetParent(spine);
 
-	// ¸Þ½Ã¿¡ ¸®±ë 
+	// ï¿½Þ½Ã¿ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 	static std::array<std::string, 6> boneOrder = {
 		GameEngine::NeckBone, GameEngine::SpineBone, GameEngine::LeftArmBone, GameEngine::RightArmBone, GameEngine::LeftLegBone, GameEngine::RightLegBone
 	};
@@ -232,7 +235,7 @@ bool GameEngine::LoadResources()
 
 	characterMesh.CalculateBounds();
 
-	// È­»ìÇ¥ ¸Þ½Ã (±âÁî¸ð ¿ë)
+	// È­ï¿½ï¿½Ç¥ ï¿½Þ½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
 	Mesh& arrow = CreateMesh(GameEngine::ArrowMesh);
 	arrow.GetVertices().resize(arrowPositions.size());
 	arrow.GetIndices().resize(arrowIndice.size());
@@ -241,7 +244,7 @@ bool GameEngine::LoadResources()
 	std::copy(arrowIndice.begin(), arrowIndice.end(), arrow.GetIndices().begin());
 	std::fill(arrow.GetColors().begin(), arrow.GetColors().end(), LinearColor::Gray);
 
-	// ¹Ù´Ú ¸Þ½Ã (±âÁî¸ð ¿ë)
+	// ï¿½Ù´ï¿½ ï¿½Þ½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
 	int planeHalfSize = 3;
 	Mesh& plane = CreateMesh(GameEngine::PlaneMesh);
 	for (int z = -planeHalfSize; z <= planeHalfSize; z++)
@@ -266,16 +269,16 @@ bool GameEngine::LoadResources()
 		}
 	}
 
-	// ÅØ½ºÃÄ ·Îµù
+	// ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
 	Texture& diffuseTexture = CreateTexture(GameEngine::DiffuseTexture, GameEngine::SteveTexturePath);
-	assert(diffuseTexture.IsIntialized());
+	assert(diffuseTexture.IsInitialized());
 
 	return true;
 }
 
 bool GameEngine::LoadScene()
 {
-	// ÇÃ·¹ÀÌ¾î
+	// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
 	constexpr float playerScale = 100.f;
 
 	GameObject& goPlayer = CreateNewGameObject(GameEngine::PlayerGo);
@@ -283,7 +286,7 @@ bool GameEngine::LoadScene()
 	goPlayer.GetTransform().SetWorldScale(Vector3::One * playerScale);
 	goPlayer.GetTransform().SetWorldRotation(Rotator(180.f, 0.f, 0.f));
 
-	// Ä³¸¯ÅÍ º»À» Ç¥½ÃÇÒ È­»ìÇ¥
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½Ç¥
 	Mesh& cm = GetMesh(goPlayer.GetMeshKey());
 	for (const auto& b : cm.GetBones())
 	{
@@ -298,11 +301,11 @@ bool GameEngine::LoadScene()
 		_BoneGameObjectPtrs.insert({ goBoneArrow.GetName(),&goBoneArrow });
 	}
 
-	// Ä«¸Þ¶ó ¸¯
+	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½
 	GameObject& goCameraRig = CreateNewGameObject(GameEngine::CameraRigGo);
 	goCameraRig.GetTransform().SetWorldPosition(Vector3(0.f, 150.f, 0.f));
 
-	// Ä«¸Þ¶ó ¼³Á¤
+	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
 	_MainCamera.GetTransform().SetWorldPosition(Vector3(500.f, 800.f, -1000.f));
 	_MainCamera.SetParent(goCameraRig);
 	_MainCamera.SetLookAtRotation(goCameraRig);
@@ -335,7 +338,7 @@ GameObject& GameEngine::CreateNewGameObject(const std::string& InName)
 		std::size_t targetHash = (*it)->GetHash();
 		if (targetHash == inHash)
 		{
-			// Áßº¹µÈ Å° ¹ß»ý. ¹«½Ã.
+			// ï¿½ßºï¿½ï¿½ï¿½ Å° ï¿½ß»ï¿½. ï¿½ï¿½ï¿½ï¿½.
 			assert(false);
 			return GameObject::Invalid;
 		}

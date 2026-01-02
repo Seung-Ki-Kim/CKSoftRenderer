@@ -1,4 +1,7 @@
 #pragma once
+#include <memory>
+#include <vector>
+#include <unordered_map>
 
 namespace CK
 {
@@ -11,52 +14,52 @@ public:
 	GameEngine() = default;
 
 public:
-	// °ø¿ë ÀÎÅÍÆäÀÌ½º
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½
 	virtual bool Init() override;
 	virtual bool IsInitialized() override { return _IsInitialized; }
 	virtual void OnScreenResize(const ScreenPoint & InScreenSize) override;
 	virtual InputManager& GetInputManager() override { return _InputManager; }
 
-	// °ÔÀÓ ·ÎÁ÷ ¿ëµµ 
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ëµµ 
 	const InputManager& GetInputManager() const { return _InputManager; }
 
-	// ¸®¼Ò½º °ü¸®
+	// ï¿½ï¿½ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	Mesh& CreateMesh(const std::size_t & InKey);
 	Texture& CreateTexture(const std::size_t & InKey, const std::string & InTexturePath);
 
-	// °ÔÀÓ ¿ÀºêÁ§Æ®
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	const std::vector<std::unique_ptr<GameObject>>& GetScene() const { return _Scene; }
 	std::vector< std::unique_ptr<GameObject>>::const_iterator SceneBegin() const { return _Scene.begin(); }
 	std::vector< std::unique_ptr<GameObject>>::const_iterator SceneEnd() const { return _Scene.end(); }
 	GameObject& CreateNewGameObject(const std::string & InName);
 	GameObject& GetGameObject(const std::string & InName);
 
-	// ¸Þ½Ã
+	// ï¿½Þ½ï¿½
 	Mesh& GetMesh(const std::size_t & InMeshKey) { return *_Meshes.at(InMeshKey).get(); }
 	const Mesh& GetMesh(const std::size_t & InMeshKey) const { return *_Meshes.at(InMeshKey).get(); }
 
-	// Ä«¸Þ¶ó 
+	// Ä«ï¿½Þ¶ï¿½ 
 	FORCEINLINE CameraObject& GetMainCamera() { return _MainCamera; }
 	FORCEINLINE const CameraObject& GetMainCamera() const { return _MainCamera; }
 
-	// ¸ÞÀÎ ÅØ½ºÃÄ
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½ï¿½ï¿½
 	FORCEINLINE const Texture& GetTexture(const std::size_t & InTextureKey) const { return *_Textures.at(InTextureKey).get(); }
 
-	// º»À» ±×¸®±â À§ÇÑ ¸ñ·Ï
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	std::unordered_map<std::string, GameObject*> GetBoneObjectPtrs() { return _BoneGameObjectPtrs; }
 
 private:
 	bool LoadResources();
 	bool LoadScene();
 
-public: // ÁÖ¿ä Å° °ª
-	// ¸Þ½Ã
+public: // ï¿½Ö¿ï¿½ Å° ï¿½ï¿½
+	// ï¿½Þ½ï¿½
 	static const std::size_t QuadMesh;
 
-	// °ÔÀÓ ¿ÀºêÁ§Æ®
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	static const std::string PlayerGo;
 
-	// ÅØ½ºÃÄ
+	// ï¿½Ø½ï¿½ï¿½ï¿½
 	static const std::size_t DiffuseTexture;
 	static const std::string SteveTexturePath;
 
